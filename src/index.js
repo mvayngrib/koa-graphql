@@ -78,9 +78,9 @@ export type OptionsData = {
   extensions?: ?(info: RequestInfo) => { [key: string]: mixed },
 
   /**
-   * A boolean to optionally enable GraphiQL mode.
+   * graphiql options
    */
-  graphiql?: ?boolean,
+  graphiql?: ?mixed,
 };
 
 type Middleware = (ctx: Context) => Promise<void>;
@@ -286,6 +286,7 @@ function graphqlHTTP(options: Options): Middleware {
         variables,
         operationName,
         result,
+        options: graphiql
       });
       response.type = 'text/html';
       response.body = payload;
