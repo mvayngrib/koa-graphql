@@ -21,7 +21,8 @@ type Image = {
 
 type GraphiQLOptions = {
   logo?: ?Image,
-  bookmarks?: ?Array<Bookmark>
+  bookmarks?: ?Array<Bookmark>,
+  jwt?: boolean
 }
 
 type GraphiQLData = {
@@ -56,9 +57,11 @@ export function renderGraphiQL(data: GraphiQLData): string {
     ? JSON.stringify(data.result, null, 2)
     : null;
   const operationName = data.operationName;
-  const options = data.options;
-  const logo = options.logo;
-  const bookmarks = options.bookmarks || [];
+  const {
+    logo,
+    bookmarks=[],
+    jwt
+  } = data.options;
 
   /* eslint-disable max-len */
   return `<!--
@@ -126,14 +129,25 @@ add "&raw" to the end of the URL within a browser.
     }
     var fetchURL = locationQuery(otherParams);
 
+    function getHeaders(graphQLParams) {
+      var jwtToken = document.getElementById('jwt-token').value;
+      var headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+
+      if (jwtToken) {
+        headers.Authorization = 'Bearer ' + jwtToken;
+      }
+
+      return headers;
+    }
+
     // Defines a GraphQL fetcher using the fetch API.
     function graphQLFetcher(graphQLParams) {
       return fetch(fetchURL, {
         method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
+        headers: getHeaders(graphQLParams),
         body: JSON.stringify(graphQLParams),
         credentials: 'include',
       }).then(function (response) {
@@ -204,10 +218,18 @@ add "&raw" to the end of the URL within a browser.
     var toolbarItems = []
     if (bookmarksMenu) toolbarItems.push(bookmarksMenu)
 
+    var headersInputs = React.createElement('div', {}, [
+      React.createElement('input', {
+        id: 'jwt-token',
+        placeholder: 'JWT Token goes here'
+      })
+    ])
+
     var toolbar = React.createElement(GraphiQL.Toolbar, {}, [
       prettifyButton,
       historyButton,
-      bookmarksMenu
+      bookmarksMenu,
+      headersInputs
     ])
 
     customComponents.push(toolbar)
