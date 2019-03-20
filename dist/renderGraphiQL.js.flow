@@ -19,9 +19,14 @@ type Image = {
   height: number
 }
 
+type Bookmarks = {
+  title: string,
+  items: Array<Bookmark>
+}
+
 type GraphiQLOptions = {
   logo?: ?Image,
-  bookmarks?: ?Array<Bookmark>,
+  bookmarks?: Bookmarks,
   jwt?: boolean
 }
 
@@ -35,6 +40,8 @@ type GraphiQLData = {
 
 // Current latest version of GraphiQL.
 const GRAPHIQL_VERSION = '0.11.2';
+
+const EMPTY_BOOKMARKS = { items: [] }
 
 // Ensures string values are safe to be used within a <script> tag.
 function safeSerialize(data) {
@@ -59,7 +66,7 @@ export function renderGraphiQL(data: GraphiQLData): string {
   const operationName = data.operationName;
   const {
     logo,
-    bookmarks=[],
+    bookmarks=EMPTY_BOOKMARKS,
     jwt
   } = data.options;
 

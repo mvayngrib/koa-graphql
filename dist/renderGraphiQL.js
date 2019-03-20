@@ -7,7 +7,7 @@ exports.renderGraphiQL = renderGraphiQL;
 
 
 // Current latest version of GraphiQL.
-
+var GRAPHIQL_VERSION = '0.11.2';
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -17,10 +17,10 @@ exports.renderGraphiQL = renderGraphiQL;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-var GRAPHIQL_VERSION = '0.11.2';
+var EMPTY_BOOKMARKS = { items: []
 
-// Ensures string values are safe to be used within a <script> tag.
-function safeSerialize(data) {
+  // Ensures string values are safe to be used within a <script> tag.
+};function safeSerialize(data) {
   return data ? JSON.stringify(data).replace(/\//g, '\\/') : 'undefined';
 }
 
@@ -39,7 +39,7 @@ function renderGraphiQL(data) {
   var _data$options = data.options,
       logo = _data$options.logo,
       _data$options$bookmar = _data$options.bookmarks,
-      bookmarks = _data$options$bookmar === undefined ? [] : _data$options$bookmar,
+      bookmarks = _data$options$bookmar === undefined ? EMPTY_BOOKMARKS : _data$options$bookmar,
       jwt = _data$options.jwt;
 
   /* eslint-disable max-len */
